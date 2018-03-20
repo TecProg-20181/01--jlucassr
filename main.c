@@ -1,12 +1,12 @@
 #include <stdio.h>
 
-typedef struct _pixel {
+typedef struct pixelProperties {
     unsigned short int red;
     unsigned short int green;
     unsigned short int blue;
 } Pixel;
 
-typedef struct _image {
+typedef struct imageProperties {
     unsigned short int pixel[512][512][3];
     unsigned int width;
     unsigned int height;
@@ -21,7 +21,7 @@ int pixel_igual(Pixel p1, Pixel p2) {
 }
 
 
-Image escala_de_cinza(Image img) {
+Image grayScale(Image img) {
 
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
@@ -64,26 +64,26 @@ void blur(unsigned int height, unsigned short int pixel[512][512][3], int T, uns
     }
 }
 
-Image rotacionar90direita(Image img) {
-    Image rotacionada;
+Image rotate90Right(Image img) {
+    Image rotated;
 
-    rotacionada.width = img.height;
-    rotacionada.height = img.width;
+    rotated.width = img.height;
+    rotated.height = img.width;
 
-    for (unsigned int i = 0, y = 0; i < rotacionada.height; ++i, ++y) {
-        for (int j = rotacionada.width - 1, x = 0; j >= 0; --j, ++x) {
-            rotacionada.pixel[i][j][0] = img.pixel[x][y][0];
-            rotacionada.pixel[i][j][1] = img.pixel[x][y][1];
-            rotacionada.pixel[i][j][2] = img.pixel[x][y][2];
+    for (unsigned int i = 0, y = 0; i < rotated.height; ++i, ++y) {
+        for (int j = rotated.width - 1, x = 0; j >= 0; --j, ++x) {
+            rotated.pixel[i][j][0] = img.pixel[x][y][0];
+            rotated.pixel[i][j][1] = img.pixel[x][y][1];
+            rotated.pixel[i][j][2] = img.pixel[x][y][2];
         }
     }
 
-    return rotacionada;
+    return rotated;
 }
 
-void inverter_cores(unsigned short int pixel[512][512][3],
-                    unsigned int width, unsigned int height) {
-    for (unsigned int i = 0; i < height; ++i) {
+void invertColors(unsigned short int pixel[512][512][3],
+    unsigned int width, unsigned int height) {
+      for (unsigned int i = 0; i < height; ++i) {
         for (unsigned int j = 0; j < width; ++j) {
             pixel[i][j][0] = 255 - pixel[i][j][0];
             pixel[i][j][1] = 255 - pixel[i][j][1];
@@ -92,21 +92,21 @@ void inverter_cores(unsigned short int pixel[512][512][3],
     }
 }
 
-Image cortar_imagem(Image img, int x, int y, int width, int height) {
-    Image cortada;
+Image cutImage(Image img, int x, int y, int width, int height) {
+    Image cutted;
 
-    cortada.width = width;
-    cortada.height = height;
+    cutted.width = width;
+    cutted.height = height;
 
     for(int i = 0; i < height; ++i) {
         for(int j = 0; j < width; ++j) {
-            cortada.pixel[i][j][0] = img.pixel[i + y][j + x][0];
-            cortada.pixel[i][j][1] = img.pixel[i + y][j + x][1];
-            cortada.pixel[i][j][2] = img.pixel[i + y][j + x][2];
+            cutted.pixel[i][j][0] = img.pixel[i + y][j + x][0];
+            cutted.pixel[i][j][1] = img.pixel[i + y][j + x][1];
+            cutted.pixel[i][j][2] = img.pixel[i + y][j + x][2];
         }
     }
 
-    return cortada;
+    return cutted;
 }
 
 
@@ -118,8 +118,8 @@ int main() {
     scanf("%s", p3);
 
     // read width height and color of image
-    int max_color;
-    scanf("%u %u %d", &img.width, &img.height, &max_color);
+    int maxColor;
+    scanf("%u %u %d", &img.width, &img.height, &maxColor);
 
     // read all pixels of image
     for (unsigned int i = 0; i < img.height; ++i) {
@@ -140,7 +140,7 @@ int main() {
 
         switch(opcao) {
             case 1: { // Escala de Cinza
-                img = escala_de_cinza(img);
+                img = grayScale(img);
                 break;
             }
             case 2: { // Filtro Sepia
@@ -178,7 +178,7 @@ int main() {
                 scanf("%d", &quantas_vezes);
                 quantas_vezes %= 4;
                 for (int j = 0; j < quantas_vezes; ++j) {
-                    img = rotacionar90direita(img);
+                    img = rotate90Right(img);
                 }
                 break;
             }
@@ -215,7 +215,7 @@ int main() {
                 break;
             }
             case 6: { // Inversao de Cores
-                inverter_cores(img.pixel, img.width, img.height);
+                invertColors(img.pixel, img.width, img.height);
                 break;
             }
             case 7: { // Cortar Imagem
@@ -224,7 +224,7 @@ int main() {
                 int width, height;
                 scanf("%d %d", &width, &height);
 
-                img = cortar_imagem(img, x, y, width, height);
+                img = cutImage(img, x, y, width, height);
                 break;
             }
         }
