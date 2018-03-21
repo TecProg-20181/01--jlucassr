@@ -12,15 +12,6 @@ typedef struct imageProperties {
     unsigned int height;
 } Image;
 
-int pixel_igual(Pixel p1, Pixel p2) {
-    if (p1.red == p2.red &&
-        p1.green == p2.green &&
-        p1.blue == p2.blue)
-        return 1;
-    return 0;
-}
-
-
 Image grayScale(Image img) {
 
     for (unsigned int i = 0; i < img.height; ++i) {
