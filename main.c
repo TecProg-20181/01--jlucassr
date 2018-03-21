@@ -1,4 +1,7 @@
 #include <stdio.h>
+#define RED 0
+#define GREEN 1
+#define BLUE 2
 
 typedef struct pixelProperties {
     unsigned short int red;
@@ -16,13 +19,15 @@ Image grayScale(Image img) {
 
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
-            int average = img.pixel[i][j][0] +
-                        img.pixel[i][j][1] +
-                        img.pixel[i][j][2];
+            int average = img.pixel[i][j][RED] +
+                          img.pixel[i][j][GREEN] +
+                          img.pixel[i][j][BLUE];
+
             average /= 3;
-            img.pixel[i][j][0] = average;
-            img.pixel[i][j][1] = average;
-            img.pixel[i][j][2] = average;
+
+            img.pixel[i][j][RED] = average;
+            img.pixel[i][j][GREEN] = average;
+            img.pixel[i][j][BLUE] = average;
         }
     }
 
@@ -39,9 +44,9 @@ void blur(unsigned int height, unsigned short int pixel[512][512][3], int size, 
             int min_width = (width - 1 > j + size/2) ? j + size/2 : width - 1;
             for(int x = (0 > i - size/2 ? 0 : i - size/2); x <= menor_height; ++x) {
                 for(int y = (0 > j - size/2 ? 0 : j - size/2); y <= min_width; ++y) {
-                    average.red += pixel[x][y][0];
-                    average.green += pixel[x][y][1];
-                    average.blue += pixel[x][y][2];
+                    average.red += pixel[x][y][RED];
+                    average.green += pixel[x][y][GREEN];
+                    average.blue += pixel[x][y][BLUE];
                 }
             }
 
@@ -49,9 +54,9 @@ void blur(unsigned int height, unsigned short int pixel[512][512][3], int size, 
             average.green /= size * size;
             average.blue /= size * size;
 
-            pixel[i][j][0] = average.red;
-            pixel[i][j][1] = average.green;
-            pixel[i][j][2] = average.blue;
+            pixel[i][j][RED] = average.red;
+            pixel[i][j][GREEN] = average.green;
+            pixel[i][j][BLUE] = average.blue;
         }
     }
 }
@@ -64,22 +69,23 @@ Image rotate90Right(Image img) {
 
     for (unsigned int i = 0, y = 0; i < rotated.height; ++i, ++y) {
         for (int j = rotated.width - 1, x = 0; j >= 0; --j, ++x) {
-            rotated.pixel[i][j][0] = img.pixel[x][y][0];
-            rotated.pixel[i][j][1] = img.pixel[x][y][1];
-            rotated.pixel[i][j][2] = img.pixel[x][y][2];
+
+            rotated.pixel[i][j][RED] = img.pixel[x][y][RED];
+            rotated.pixel[i][j][GREEN] = img.pixel[x][y][GREEN];
+            rotated.pixel[i][j][BLUE] = img.pixel[x][y][BLUE];
         }
     }
 
     return rotated;
 }
 
-void invertColors(unsigned short int pixel[512][512][3],
-    unsigned int width, unsigned int height) {
+void invertColors(unsigned short int pixel[512][512][3], unsigned int width, unsigned int height) {
+
       for (unsigned int i = 0; i < height; ++i) {
         for (unsigned int j = 0; j < width; ++j) {
-            pixel[i][j][0] = 255 - pixel[i][j][0];
-            pixel[i][j][1] = 255 - pixel[i][j][1];
-            pixel[i][j][2] = 255 - pixel[i][j][2];
+            pixel[i][j][RED] = 255 - pixel[i][j][RED];
+            pixel[i][j][GREEN] = 255 - pixel[i][j][GREEN];
+            pixel[i][j][BLUE] = 255 - pixel[i][j][BLUE];
         }
     }
 }
@@ -92,9 +98,10 @@ Image cutImage(Image img, int x, int y, int width, int height) {
 
     for(int i = 0; i < height; ++i) {
         for(int j = 0; j < width; ++j) {
-            cutted.pixel[i][j][0] = img.pixel[i + y][j + x][0];
-            cutted.pixel[i][j][1] = img.pixel[i + y][j + x][1];
-            cutted.pixel[i][j][2] = img.pixel[i + y][j + x][2];
+
+            cutted.pixel[i][j][RED] = img.pixel[i + y][j + x][RED];
+            cutted.pixel[i][j][GREEN] = img.pixel[i + y][j + x][GREEN];
+            cutted.pixel[i][j][BLUE] = img.pixel[i + y][j + x][BLUE];
         }
     }
 
@@ -116,9 +123,9 @@ int main() {
     // read all pixels of image
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
-            scanf("%hu %hu %hu", &img.pixel[i][j][0],
-                                 &img.pixel[i][j][1],
-                                 &img.pixel[i][j][2]);
+            scanf("%hu %hu %hu", &img.pixel[i][j][RED],
+                                 &img.pixel[i][j][GREEN],
+                                 &img.pixel[i][j][BLUE]);
 
         }
     }
@@ -139,21 +146,21 @@ int main() {
                 for (unsigned int x = 0; x < img.height; ++x) {
                     for (unsigned int j = 0; j < img.width; ++j) {
                         unsigned short int pixel[3];
-                        pixel[0] = img.pixel[x][j][0];
-                        pixel[1] = img.pixel[x][j][1];
-                        pixel[2] = img.pixel[x][j][2];
+                        pixel[RED] = img.pixel[x][j][RED];
+                        pixel[GREEN] = img.pixel[x][j][GREEN];
+                        pixel[BLUE] = img.pixel[x][j][BLUE];
 
                         int p =  pixel[0] * .393 + pixel[1] * .769 + pixel[2] * .189;
-                        int menor_r = (255 >  p) ? p : 255;
-                        img.pixel[x][j][0] = menor_r;
+                        int minimunRed = (255 >  p) ? p : 255;
+                        img.pixel[x][j][RED] = minimunRed;
 
                         p =  pixel[0] * .349 + pixel[1] * .686 + pixel[2] * .168;
-                        menor_r = (255 >  p) ? p : 255;
-                        img.pixel[x][j][1] = menor_r;
+                        minimunRed = (255 >  p) ? p : 255;
+                        img.pixel[x][j][GREEN] = minimunRed;
 
                         p =  pixel[0] * .272 + pixel[1] * .534 + pixel[2] * .131;
-                        menor_r = (255 >  p) ? p : 255;
-                        img.pixel[x][j][2] = menor_r;
+                        minimunRed = (255 >  p) ? p : 255;
+                        img.pixel[x][j][BLUE] = minimunRed;
                     }
                 }
 
@@ -191,17 +198,17 @@ int main() {
                         else x = img.height - 1 - i2;
 
                         Pixel aux1;
-                        aux1.red = img.pixel[i2][j][0];
-                        aux1.green = img.pixel[i2][j][1];
-                        aux1.blue = img.pixel[i2][j][2];
+                        aux1.red = img.pixel[i2][j][RED];
+                        aux1.green = img.pixel[i2][j][GREEN];
+                        aux1.blue = img.pixel[i2][j][BLUE];
 
-                        img.pixel[i2][j][0] = img.pixel[x][y][0];
-                        img.pixel[i2][j][1] = img.pixel[x][y][1];
-                        img.pixel[i2][j][2] = img.pixel[x][y][2];
+                        img.pixel[i2][j][RED] = img.pixel[x][y][RED];
+                        img.pixel[i2][j][GREEN] = img.pixel[x][y][GREEN];
+                        img.pixel[i2][j][BLUE] = img.pixel[x][y][BLUE];
 
-                        img.pixel[x][y][0] = aux1.red;
-                        img.pixel[x][y][1] = aux1.green;
-                        img.pixel[x][y][2] = aux1.blue;
+                        img.pixel[x][y][RED] = aux1.red;
+                        img.pixel[x][y][GREEN] = aux1.green;
+                        img.pixel[x][y][BLUE] = aux1.blue;
                     }
                 }
                 break;
@@ -231,9 +238,9 @@ int main() {
     // print pixels of image
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
-            printf("%hu %hu %hu ", img.pixel[i][j][0],
-                                   img.pixel[i][j][1],
-                                   img.pixel[i][j][2]);
+            printf("%hu %hu %hu ", img.pixel[i][j][RED],
+                                   img.pixel[i][j][GREEN],
+                                   img.pixel[i][j][BLUE]);
 
         }
         printf("\n");
