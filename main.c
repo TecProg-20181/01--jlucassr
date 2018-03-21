@@ -16,41 +16,42 @@ Image grayScale(Image img) {
 
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
-            int media = img.pixel[i][j][0] +
+            int average = img.pixel[i][j][0] +
                         img.pixel[i][j][1] +
                         img.pixel[i][j][2];
-            media /= 3;
-            img.pixel[i][j][0] = media;
-            img.pixel[i][j][1] = media;
-            img.pixel[i][j][2] = media;
+            average /= 3;
+            img.pixel[i][j][0] = average;
+            img.pixel[i][j][1] = average;
+            img.pixel[i][j][2] = average;
         }
     }
 
     return img;
 }
 
-void blur(unsigned int height, unsigned short int pixel[512][512][3], int T, unsigned int width) {
+void blur(unsigned int height, unsigned short int pixel[512][512][3], int size, unsigned int width) {
+
     for (unsigned int i = 0; i < height; ++i) {
         for (unsigned int j = 0; j < width; ++j) {
-            Pixel media = {0, 0, 0};
+            Pixel average = {0, 0, 0};
 
-            int menor_height = (height - 1 > i + T/2) ? i + T/2 : height - 1;
-            int min_width = (width - 1 > j + T/2) ? j + T/2 : width - 1;
-            for(int x = (0 > i - T/2 ? 0 : i - T/2); x <= menor_height; ++x) {
-                for(int y = (0 > j - T/2 ? 0 : j - T/2); y <= min_width; ++y) {
-                    media.red += pixel[x][y][0];
-                    media.green += pixel[x][y][1];
-                    media.blue += pixel[x][y][2];
+            int menor_height = (height - 1 > i + size/2) ? i + size/2 : height - 1;
+            int min_width = (width - 1 > j + size/2) ? j + size/2 : width - 1;
+            for(int x = (0 > i - size/2 ? 0 : i - size/2); x <= menor_height; ++x) {
+                for(int y = (0 > j - size/2 ? 0 : j - size/2); y <= min_width; ++y) {
+                    average.red += pixel[x][y][0];
+                    average.green += pixel[x][y][1];
+                    average.blue += pixel[x][y][2];
                 }
             }
 
-            media.red /= T * T;
-            media.green /= T * T;
-            media.blue /= T * T;
+            average.red /= size * size;
+            average.green /= size * size;
+            average.blue /= size * size;
 
-            pixel[i][j][0] = media.red;
-            pixel[i][j][1] = media.green;
-            pixel[i][j][2] = media.blue;
+            pixel[i][j][0] = average.red;
+            pixel[i][j][1] = average.green;
+            pixel[i][j][2] = average.blue;
         }
     }
 }
