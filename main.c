@@ -34,6 +34,32 @@ Image grayScale(Image img) {
     return img;
 }
 
+Image sepia(Image img){
+  for (unsigned int x = 0; x < img.height; ++x) {
+      for (unsigned int j = 0; j < img.width; ++j) {
+          unsigned short int pixel[3];
+          pixel[RED] = img.pixel[x][j][RED];
+          pixel[GREEN] = img.pixel[x][j][GREEN];
+          pixel[BLUE] = img.pixel[x][j][BLUE];
+
+          int p =  pixel[0] * .393 + pixel[1] * .769 + pixel[2] * .189;
+          int minimunRed = (255 >  p) ? p : 255;
+          img.pixel[x][j][RED] = minimunRed;
+
+          p =  pixel[0] * .349 + pixel[1] * .686 + pixel[2] * .168;
+          minimunRed = (255 >  p) ? p : 255;
+          img.pixel[x][j][GREEN] = minimunRed;
+
+          p =  pixel[0] * .272 + pixel[1] * .534 + pixel[2] * .131;
+          minimunRed = (255 >  p) ? p : 255;
+          img.pixel[x][j][BLUE] = minimunRed;
+      }
+  }
+
+  return img;
+}
+
+
 void blur(unsigned int height, unsigned short int pixel[512][512][3], int size, unsigned int width) {
 
     for (unsigned int i = 0; i < height; ++i) {
@@ -142,36 +168,19 @@ int main() {
                 img = grayScale(img);
                 break;
             }
+
             case 2: { // Filtro Sepia
-                for (unsigned int x = 0; x < img.height; ++x) {
-                    for (unsigned int j = 0; j < img.width; ++j) {
-                        unsigned short int pixel[3];
-                        pixel[RED] = img.pixel[x][j][RED];
-                        pixel[GREEN] = img.pixel[x][j][GREEN];
-                        pixel[BLUE] = img.pixel[x][j][BLUE];
-
-                        int p =  pixel[0] * .393 + pixel[1] * .769 + pixel[2] * .189;
-                        int minimunRed = (255 >  p) ? p : 255;
-                        img.pixel[x][j][RED] = minimunRed;
-
-                        p =  pixel[0] * .349 + pixel[1] * .686 + pixel[2] * .168;
-                        minimunRed = (255 >  p) ? p : 255;
-                        img.pixel[x][j][GREEN] = minimunRed;
-
-                        p =  pixel[0] * .272 + pixel[1] * .534 + pixel[2] * .131;
-                        minimunRed = (255 >  p) ? p : 255;
-                        img.pixel[x][j][BLUE] = minimunRed;
-                    }
-                }
-
+                img = sepia(img);
                 break;
             }
+
             case 3: { // Blur
                 int tamanho = 0;
                 scanf("%d", &tamanho);
                 blur(img.height, img.pixel, tamanho, img.width);
                 break;
             }
+            
             case 4: { // Rotacao
                 int quantas_vezes = 0;
                 scanf("%d", &quantas_vezes);
