@@ -105,15 +105,18 @@ Image rotate90Right(Image img) {
     return rotated;
 }
 
-void invertColors(unsigned short int pixel[512][512][3], unsigned int width, unsigned int height) {
+Image invertColors(Image img) {
+    Image invert;
 
-      for (unsigned int i = 0; i < height; ++i) {
-        for (unsigned int j = 0; j < width; ++j) {
-            pixel[i][j][RED] = 255 - pixel[i][j][RED];
-            pixel[i][j][GREEN] = 255 - pixel[i][j][GREEN];
-            pixel[i][j][BLUE] = 255 - pixel[i][j][BLUE];
+      for (unsigned int i = 0; i < img.height; ++i) {
+        for (unsigned int j = 0; j < img.width; ++j) {
+            invert.pixel[i][j][RED] = 255 - img.pixel[i][j][RED];
+            invert.pixel[i][j][GREEN] = 255 - img.pixel[i][j][GREEN];
+            invert.pixel[i][j][BLUE] = 255 - img.pixel[i][j][BLUE];
         }
     }
+
+    return img;
 }
 
 Image cutImage(Image img, int x, int y, int width, int height) {
@@ -180,7 +183,7 @@ int main() {
                 blur(img.height, img.pixel, tamanho, img.width);
                 break;
             }
-            
+
             case 4: { // Rotacao
                 int quantas_vezes = 0;
                 scanf("%d", &quantas_vezes);
@@ -222,10 +225,12 @@ int main() {
                 }
                 break;
             }
+
             case 6: { // Inversao de Cores
-                invertColors(img.pixel, img.width, img.height);
+                img = invertColors(img);
                 break;
             }
+
             case 7: { // Cortar Imagem
                 int x, y;
                 scanf("%d %d", &x, &y);
@@ -254,5 +259,6 @@ int main() {
         }
         printf("\n");
     }
+
     return 0;
 }
