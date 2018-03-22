@@ -35,6 +35,7 @@ Image grayScale(Image img) {
 }
 
 Image sepia(Image img){
+
   for (unsigned int x = 0; x < img.height; ++x) {
       for (unsigned int j = 0; j < img.width; ++j) {
           unsigned short int pixel[3];
@@ -59,20 +60,24 @@ Image sepia(Image img){
   return img;
 }
 
+Image blur(Image img) {
 
-void blur(unsigned int height, unsigned short int pixel[512][512][3], int size, unsigned int width) {
+    int size = 0;
+    scanf("%d", &size);
 
-    for (unsigned int i = 0; i < height; ++i) {
-        for (unsigned int j = 0; j < width; ++j) {
+        for (unsigned int i = 0; i < img.height; ++i) {
+          for (unsigned int j = 0; j < img.width; ++j) {
+
             Pixel average = {0, 0, 0};
 
-            int menor_height = (height - 1 > i + size/2) ? i + size/2 : height - 1;
-            int min_width = (width - 1 > j + size/2) ? j + size/2 : width - 1;
-            for(int x = (0 > i - size/2 ? 0 : i - size/2); x <= menor_height; ++x) {
-                for(int y = (0 > j - size/2 ? 0 : j - size/2); y <= min_width; ++y) {
-                    average.red += pixel[x][y][RED];
-                    average.green += pixel[x][y][GREEN];
-                    average.blue += pixel[x][y][BLUE];
+            int minHeight = (img.height - 1 > i + size/2) ? i + size/2 : img.height - 1;
+            int minWidth = (img.width - 1 > j + size/2) ? j + size/2 : img.width - 1;
+
+              for(int x = (0 > i - size/2 ? 0 : i - size/2); x <= minHeight; ++x) {
+                for(int y = (0 > j - size/2 ? 0 : j - size/2); y <= minWidth; ++y) {
+                    average.red += img.pixel[x][y][RED];
+                    average.green += img.pixel[x][y][GREEN];
+                    average.blue += img.pixel[x][y][BLUE];
                 }
             }
 
@@ -80,9 +85,9 @@ void blur(unsigned int height, unsigned short int pixel[512][512][3], int size, 
             average.green /= size * size;
             average.blue /= size * size;
 
-            pixel[i][j][RED] = average.red;
-            pixel[i][j][GREEN] = average.green;
-            pixel[i][j][BLUE] = average.blue;
+            img.pixel[i][j][RED] = average.red;
+            img.pixel[i][j][GREEN] = average.green;
+            img.pixel[i][j][BLUE] = average.blue;
         }
     }
 }
@@ -208,9 +213,7 @@ int main() {
             }
 
             case 3: { // Blur
-                int tamanho = 0;
-                scanf("%d", &tamanho);
-                blur(img.height, img.pixel, tamanho, img.width);
+                img = blur(img);
                 break;
             }
 
