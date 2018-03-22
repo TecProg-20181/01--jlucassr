@@ -15,10 +15,119 @@ typedef struct imageProperties {
     unsigned int height;
 } Image;
 
+Image grayScale(Image img);
+Image sepia(Image img);
+Image blur(Image img);
+Image rotate90Right(Image img);
+Image mirroringImage(Image img, int horizontally);
+Image invertColors(Image img);
+Image cutImage(Image img, int x, int y, int width, int height);
+
+
+int main() {
+    Image img;
+
+    char p3[4];
+    scanf("%s", p3);
+
+    // read width height and color of image
+    int maxColor;
+    scanf("%u %u %d", &img.width, &img.height, &maxColor);
+
+    // read all pixels of image
+    for (unsigned int i = 0; i < img.height; ++i) {
+        for (unsigned int j = 0; j < img.width; ++j) {
+            scanf("%hu %hu %hu", &img.pixel[i][j][RED],
+                                 &img.pixel[i][j][GREEN],
+                                 &img.pixel[i][j][BLUE]);
+
+        }
+    }
+
+    int numberOpcions;
+    scanf("%d", &numberOpcions);
+
+    for(int i = 0; i < numberOpcions; ++i) {
+        int opcion;
+        scanf("%d", &opcion);
+
+        switch(opcion) {
+
+            case 1: {
+                img = grayScale(img);
+                break;
+            }
+
+            case 2: {
+                img = sepia(img);
+                break;
+            }
+
+            case 3: {
+                img = blur(img);
+                break;
+            }
+
+            case 4: {
+                int howManyTimes = 0;
+                scanf("%d", &howManyTimes);
+                howManyTimes %= 4;
+                for (int j = 0; j < howManyTimes; ++j) {
+                    img = rotate90Right(img);
+                }
+                break;
+            }
+
+            case 5: {
+                int horizontally = 0;
+                scanf("%d", &horizontally);
+
+                img = mirroringImage(img, horizontally);
+                break;
+            }
+
+            case 6: {
+                img = invertColors(img);
+                break;
+            }
+
+            case 7: {
+                int x, y;
+                scanf("%d %d", &x, &y);
+                int width, height;
+                scanf("%d %d", &width, &height);
+
+                img = cutImage(img, x, y, width, height);
+                break;
+            }
+        }
+
+    }
+
+    // print type of image
+    printf("P3\n");
+    // print width height and color of image
+    printf("%u %u\n255\n", img.width, img.height);
+
+    // print pixels of image
+    for (unsigned int i = 0; i < img.height; ++i) {
+        for (unsigned int j = 0; j < img.width; ++j) {
+            printf("%hu %hu %hu ", img.pixel[i][j][RED],
+                                   img.pixel[i][j][GREEN],
+                                   img.pixel[i][j][BLUE]);
+
+        }
+        printf("\n");
+    }
+
+    return 0;
+}
+
 Image grayScale(Image img) {
 
     for (unsigned int i = 0; i < img.height; ++i) {
         for (unsigned int j = 0; j < img.width; ++j) {
+
             int average = img.pixel[i][j][RED] +
                           img.pixel[i][j][GREEN] +
                           img.pixel[i][j][BLUE];
@@ -34,7 +143,7 @@ Image grayScale(Image img) {
     return img;
 }
 
-Image sepia(Image img){
+Image sepia(Image img) {
 
   for (unsigned int x = 0; x < img.height; ++x) {
       for (unsigned int j = 0; j < img.width; ++j) {
@@ -110,7 +219,7 @@ Image rotate90Right(Image img) {
     return rotated;
 }
 
-Image mirroringImage(Image img, int horizontally){
+Image mirroringImage(Image img, int horizontally) {
 
   int width = img.width, height = img.height;
 
@@ -170,103 +279,4 @@ Image cutImage(Image img, int x, int y, int width, int height) {
     }
 
     return cutted;
-}
-
-
-int main() {
-    Image img;
-
-    // read type of image
-    char p3[4];
-    scanf("%s", p3);
-
-    // read width height and color of image
-    int maxColor;
-    scanf("%u %u %d", &img.width, &img.height, &maxColor);
-
-    // read all pixels of image
-    for (unsigned int i = 0; i < img.height; ++i) {
-        for (unsigned int j = 0; j < img.width; ++j) {
-            scanf("%hu %hu %hu", &img.pixel[i][j][RED],
-                                 &img.pixel[i][j][GREEN],
-                                 &img.pixel[i][j][BLUE]);
-
-        }
-    }
-
-    int n_opcoes;
-    scanf("%d", &n_opcoes);
-
-    for(int i = 0; i < n_opcoes; ++i) {
-        int opcao;
-        scanf("%d", &opcao);
-
-        switch(opcao) {
-            case 1: { // Escala de Cinza
-                img = grayScale(img);
-                break;
-            }
-
-            case 2: { // Filtro Sepia
-                img = sepia(img);
-                break;
-            }
-
-            case 3: { // Blur
-                img = blur(img);
-                break;
-            }
-
-            case 4: { // rotate90Right case
-                int howManyTimes = 0;
-                scanf("%d", &howManyTimes);
-                howManyTimes %= 4;
-                for (int j = 0; j < howManyTimes; ++j) {
-                    img = rotate90Right(img);
-                }
-                break;
-            }
-
-            case 5: { // Espelhamento
-                int horizontally = 0;
-                scanf("%d", &horizontally);
-                img = mirroringImage(img, horizontally);
-                break;
-            }
-
-            case 6: { // Inversao de Cores
-                img = invertColors(img);
-                break;
-            }
-
-            case 7: { // Cortar Imagem
-                int x, y;
-                scanf("%d %d", &x, &y);
-                int width, height;
-                scanf("%d %d", &width, &height);
-
-                img = cutImage(img, x, y, width, height);
-                break;
-            }
-        }
-
-    }
-
-    // print type of image
-    printf("P3\n");
-    // print width height and color of image
-    printf("%u %u\n255\n", img.width, img.height);
-
-    // print pixels of image
-    for (unsigned int i = 0; i < img.height; ++i) {
-        for (unsigned int j = 0; j < img.width; ++j) {
-            printf("%hu %hu %hu ", img.pixel[i][j][RED],
-                                   img.pixel[i][j][GREEN],
-                                   img.pixel[i][j][BLUE]);
-
-        }
-        printf("\n");
-    }
-
-    return 0;
 }
