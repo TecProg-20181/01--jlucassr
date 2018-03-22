@@ -105,6 +105,36 @@ Image rotate90Right(Image img) {
     return rotated;
 }
 
+Image mirroringImage(Image img, int horizontally){
+
+  int width = img.width, height = img.height;
+
+  if (horizontally == 1) width /= 2;
+  else height /= 2;
+
+  for (int i2 = 0; i2 < height; ++i2) {
+      for (int j = 0; j < width; ++j) {
+          int x = i2, y = j;
+
+          if (horizontally == 1) y = img.width - 1 - j;
+          else x = img.height - 1 - i2;
+
+          Pixel aux1;
+          aux1.red = img.pixel[i2][j][RED];
+          aux1.green = img.pixel[i2][j][GREEN];
+          aux1.blue = img.pixel[i2][j][BLUE];
+
+          img.pixel[i2][j][RED] = img.pixel[x][y][RED];
+          img.pixel[i2][j][GREEN] = img.pixel[x][y][GREEN];
+          img.pixel[i2][j][BLUE] = img.pixel[x][y][BLUE];
+
+          img.pixel[x][y][RED] = aux1.red;
+          img.pixel[x][y][GREEN] = aux1.green;
+          img.pixel[x][y][BLUE] = aux1.blue;
+      }
+  }
+}
+
 Image invertColors(Image img) {
     Image invert;
 
@@ -184,45 +214,20 @@ int main() {
                 break;
             }
 
-            case 4: { // Rotacao
-                int quantas_vezes = 0;
-                scanf("%d", &quantas_vezes);
-                quantas_vezes %= 4;
-                for (int j = 0; j < quantas_vezes; ++j) {
+            case 4: { // rotate90Right case
+                int howManyTimes = 0;
+                scanf("%d", &howManyTimes);
+                howManyTimes %= 4;
+                for (int j = 0; j < howManyTimes; ++j) {
                     img = rotate90Right(img);
                 }
                 break;
             }
+
             case 5: { // Espelhamento
-                int horizontal = 0;
-                scanf("%d", &horizontal);
-
-                int width = img.width, height = img.height;
-
-                if (horizontal == 1) width /= 2;
-                else height /= 2;
-
-                for (int i2 = 0; i2 < height; ++i2) {
-                    for (int j = 0; j < width; ++j) {
-                        int x = i2, y = j;
-
-                        if (horizontal == 1) y = img.width - 1 - j;
-                        else x = img.height - 1 - i2;
-
-                        Pixel aux1;
-                        aux1.red = img.pixel[i2][j][RED];
-                        aux1.green = img.pixel[i2][j][GREEN];
-                        aux1.blue = img.pixel[i2][j][BLUE];
-
-                        img.pixel[i2][j][RED] = img.pixel[x][y][RED];
-                        img.pixel[i2][j][GREEN] = img.pixel[x][y][GREEN];
-                        img.pixel[i2][j][BLUE] = img.pixel[x][y][BLUE];
-
-                        img.pixel[x][y][RED] = aux1.red;
-                        img.pixel[x][y][GREEN] = aux1.green;
-                        img.pixel[x][y][BLUE] = aux1.blue;
-                    }
-                }
+                int horizontally = 0;
+                scanf("%d", &horizontally);
+                img = mirroringImage(img, horizontally);
                 break;
             }
 
