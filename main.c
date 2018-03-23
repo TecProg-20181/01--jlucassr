@@ -13,8 +13,11 @@ typedef struct imageProperties {
     unsigned short int pixel[512][512][3];
     unsigned int width;
     unsigned int height;
+    char type[4];
+    int maxColor;
 } Image;
 
+Image readImage();
 Image grayScale(Image img);
 Image sepia(Image img);
 Image blur(Image img);
@@ -27,22 +30,7 @@ Image cutImage(Image img, int x, int y, int width, int height);
 int main() {
     Image img;
 
-    char p3[4];
-    scanf("%s", p3);
-
-    // read width height and color of image
-    int maxColor;
-    scanf("%u %u %d", &img.width, &img.height, &maxColor);
-
-    // read all pixels of image
-    for (unsigned int i = 0; i < img.height; ++i) {
-        for (unsigned int j = 0; j < img.width; ++j) {
-            scanf("%hu %hu %hu", &img.pixel[i][j][RED],
-                                 &img.pixel[i][j][GREEN],
-                                 &img.pixel[i][j][BLUE]);
-
-        }
-    }
+    img = readImage();
 
     int numberOpcions;
     scanf("%d", &numberOpcions);
@@ -121,6 +109,23 @@ int main() {
     }
 
     return 0;
+}
+
+Image readImage(){
+  Image img;
+
+  scanf("%s", img.type);
+  scanf("%u %u %d", &img.width, &img.height, &img.maxColor);
+
+  // read all pixels of image
+  for (unsigned int i = 0; i < img.height; ++i) {
+      for (unsigned int j = 0; j < img.width; ++j) {
+          scanf("%hu %hu %hu", &img.pixel[i][j][RED],
+                               &img.pixel[i][j][GREEN],
+                               &img.pixel[i][j][BLUE]);
+
+      }
+  }
 }
 
 Image grayScale(Image img) {
