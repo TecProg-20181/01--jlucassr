@@ -25,7 +25,7 @@ Image rotate90Right(Image img);
 Image mirroringImage(Image img, int horizontally);
 Image invertColors(Image img);
 Image cutImage(Image img, int x, int y, int width, int height);
-
+void printImage(Image img);
 
 int main() {
     Image img;
@@ -92,21 +92,7 @@ int main() {
 
     }
 
-    // print type of image
-    printf("P3\n");
-    // print width height and color of image
-    printf("%u %u\n255\n", img.width, img.height);
-
-    // print pixels of image
-    for (unsigned int i = 0; i < img.height; ++i) {
-        for (unsigned int j = 0; j < img.width; ++j) {
-            printf("%hu %hu %hu ", img.pixel[i][j][RED],
-                                   img.pixel[i][j][GREEN],
-                                   img.pixel[i][j][BLUE]);
-
-        }
-        printf("\n");
-    }
+    printImage(img);
 
     return 0;
 }
@@ -126,6 +112,7 @@ Image readImage(){
 
       }
   }
+  return img;
 }
 
 Image grayScale(Image img) {
@@ -284,4 +271,21 @@ Image cutImage(Image img, int x, int y, int width, int height) {
     }
 
     return cutted;
+}
+
+void printImage(Image img){
+  
+  printf("P3\n");
+  printf("%u %u\n255\n", img.width, img.height);
+  printf("%d\n", img.maxColor);
+
+  for (unsigned int i = 0; i < img.height; ++i) {
+    for (unsigned int j = 0; j < img.width; ++j) {
+        printf("%hu %hu %hu ", img.pixel[i][j][RED],
+                               img.pixel[i][j][GREEN],
+                               img.pixel[i][j][BLUE]);
+
+    }
+    printf("\n");
+  }
 }
