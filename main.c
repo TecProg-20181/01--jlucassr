@@ -276,7 +276,6 @@ void printImage(Image img){
 
   printf("P3\n");
   printf("%u %u\n255\n", img.width, img.height);
-  printf("%d\n", img.maxColor);
 
   for (unsigned int i = 0; i < img.height; ++i) {
     for (unsigned int j = 0; j < img.width; ++j) {
